@@ -8,7 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository status
 
-**Status (2026-05-22):** scaffolding only. The `src/` layout described under "Repo conventions" is the *target* structure; nothing has been implemented yet. Create directories as you add the first script for each subsystem. There is no `requirements.txt`, `pyproject.toml`, or test suite in the repo yet.
+**Status (2026-05-22):** scaffolding. `src/` package layout exists (empty `__init__.py` per subpackage) — no modules implemented yet. `pyproject.toml` declares deps and tool config (ruff, pytest); `requirements.txt` is pinned via `uv pip compile`. No tests written yet.
+
+Update `requirements.txt` after any dep change in `pyproject.toml`:
+```bash
+uv pip compile pyproject.toml -o requirements.txt
+```
 
 -----
 

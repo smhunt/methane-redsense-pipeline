@@ -2,7 +2,7 @@
 
 Drone-based multispectral imaging pipeline for mapping methane-relevant vegetation stress at the **W12A landfill** (ITPS Western test site). Raw MicaSense RedEdge-MX captures are radiometrically calibrated in Python, run through WebODM for photogrammetry, then analysed for NDVI / NDRE / custom red-edge ratios over suspected seep zones.
 
-> **Status:** scaffolding only — `src/` package layout exists but no modules are implemented yet. See [CHANGELOG.md](CHANGELOG.md).
+> **Status:** scaffolding — `src/` package layout and dependency manifest in place, no modules implemented yet. See [CHANGELOG.md](CHANGELOG.md).
 
 ## Two processing paths
 
@@ -37,14 +37,17 @@ docs/              Architecture and operator runbook
 ## Quick start
 
 ```bash
-# Env setup (requirements.txt not yet committed — see CHANGELOG)
+# Env setup
 uv venv && source .venv/bin/activate
-uv pip install -r requirements.txt   # once it exists
+uv pip install -r requirements.txt        # runtime only
+uv pip install -e ".[dev]"                # + pytest / ruff for development
 
 # Tests / lint
 pytest
 ruff check . && ruff format --check .
 ```
+
+System dependencies (not installable via pip): `gdal`, `exiftool`, `zbar` — `brew install gdal exiftool zbar` on macOS.
 
 See [CLAUDE.md → Quick commands](CLAUDE.md#quick-commands) for the full pipeline invocations.
 

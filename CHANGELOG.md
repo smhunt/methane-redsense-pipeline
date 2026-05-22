@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format roughly follows [Keep a Changelog](https://keepachangelog.com/) with semantic versioning.
 
+## [0.2.0] - 2026-05-22
+
+### Added
+- `pyproject.toml` as the source-of-truth dependency manifest: runtime deps (numpy, rasterio, opencv-python-headless, scikit-image, pyzbar, pyexiftool, pyodm, pyyaml), `dev` optional-dependencies (pytest, pytest-cov, ruff), ruff and pytest tool config, setuptools build backend, and `src*` package discovery.
+- `requirements.txt` pinned via `uv pip compile pyproject.toml -o requirements.txt`.
+
+### Changed
+- README "Quick start" now shows the real install (`uv pip install -r requirements.txt` + `uv pip install -e ".[dev]"`) and lists the macOS system deps (`gdal`, `exiftool`, `zbar`).
+- CLAUDE.md "Repository status" reflects pyproject + pinned requirements; added the regenerate-from-pyproject command.
+
+### Notes
+- MicaSense `imageprocessing` is treated as a *reference* (we follow its model in our own code), not a runtime dep — see comments in `pyproject.toml`.
+
 ## [0.1.0] - 2026-05-22
 
 ### Added

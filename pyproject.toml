@@ -1,0 +1,90 @@
+[project]
+name = "methane-redsense-pipeline"
+version = "0.2.0"
+description = "MicaSense RedEdge-MX → Python radiometric calibration → WebODM pipeline for landfill methane vegetation-stress mapping (W12A site)."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Sean Hunt", email = "sean@ecoworks.ca" }]
+keywords = ["micasense", "rededge", "webodm", "multispectral", "methane", "ndvi", "ndre"]
+
+# Runtime dependencies.
+#
+# System deps not installable via pip — install separately:
+#   - GDAL (for rasterio)              brew install gdal
+#   - exiftool (for pyexiftool)        brew install exiftool
+#   - libzbar (for pyzbar)             brew install zbar
+#
+# MicaSense radiometric model: we follow the model from
+#   https://github.com/micasense/imageprocessing
+# in our own code (see CLAUDE.md). The reference repo is *not* a
+# runtime dependency — only the underlying libraries it relies on
+# are listed below.
+dependencies = [
+    # Imagery I/O
+    "numpy>=1.26",
+    "rasterio>=1.3",
+    # Image processing for the calibration reimplementation
+    "opencv-python-headless>=4.9",
+    "scikit-image>=0.22",
+    "pyzbar>=0.1.9",
+    # EXIF preservation through the pipeline
+    "pyexiftool>=0.5",
+    # WebODM API client
+    "pyodm>=1.5",
+    # Config / ODM presets
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=4.1",
+    "ruff>=0.4",
+]
+
+[project.urls]
+Repository = "https://github.com/smhunt/methane-redsense-pipeline"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# `src` is the importable top-level package (per CLAUDE.md the
+# entry points are invoked as `python -m src.calibration.run` etc.).
+# This is an unusual layout but matches the convention this repo
+# committed to up-front.
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+# ── Ruff ─────────────────────────────────────────────────────────────
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+    "C4",   # flake8-comprehensions
+]
+
+[tool.ruff.lint.per-file-ignores]
+"test_*.py" = ["B011"]                   # allow `assert False` in tests
+"notebooks/**" = ["E402", "F401"]        # notebooks are scratch
+
+# ── Pytest ───────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["src"]
+python_files = ["test_*.py"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "-ra",
+]
