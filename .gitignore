@@ -1,0 +1,22 @@
+# Data and outputs — see CLAUDE.md
+data/
+outputs/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+
+# Claude Code local-only settings (project settings.json is committed)
+.claude/settings.local.json
