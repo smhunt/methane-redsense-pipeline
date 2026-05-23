@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. Format roughly follows [Keep a Changelog](https://keepachangelog.com/) with semantic versioning.
 
+## [0.3.0] - 2026-05-22
+
+### Added
+- `src/preprocess/exif_audit.py` — first real pipeline module. Walks a flight directory for `IMG_*.tif` captures, reads EXIF/XMP via `pyexiftool`, and reports which captures are missing tags the calibration pipeline requires (RadiometricCalibration, vignette polynomial + center, GPS lat/lon/alt, BandName). DLS2 Irradiance is checked separately as optional with a note about path-1 vs path-2 implications.
+- `src/preprocess/test_exif_audit.py` — 12 tests covering filename parsing, group-insensitive tag matching (handles both `EXIF:GPSLatitude` and bare `GPSLatitude` since pyexiftool's prefix varies), file discovery, report formatting, and CLI error paths. Pure logic only; the exiftool integration is exercised in the field.
+- Module is invokable as `python -m src.preprocess.exif_audit <flight_dir>`. Exit codes: 0 = all pass, 1 = missing tags or empty dir, 2 = bad path.
+
+### Notes
+- `band_from_filename` requires the full `IMG_<capture>_<band>` shape — a bare `IMG_0000.tif` returns `None` instead of misreading the capture index as a band. (A test caught this on the first run.)
+
 ## [0.2.1] - 2026-05-22
 
 ### Added

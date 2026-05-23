@@ -38,23 +38,22 @@ Confirm the captures actually contain what the pipeline needs (RadiometricCalibr
 python -m src.preprocess.exif_audit data/MicaSense/flight_<YYYY_MM_DD>/
 ```
 
-Until the module exists, run manually:
+Walks the directory recursively for `IMG_*.tif` captures, batch-reads EXIF/XMP via exiftool, and reports per-tag coverage. Exit codes: `0` all pass, `1` missing tags or no captures found, `2` bad path.
+
+**Pass criteria (enforced by the audit):**
+- `RadiometricCalibration` present (3 floats).
+- `VignettingPolynomial` + `VignettingCenter` present (vignette model).
+- `GPSLatitude` / `GPSLongitude` / `GPSAltitude` present.
+- `BandName` present.
+- `Irradiance` (DLS2) — optional. Missing it is reported with a note: path 1 panel-only reflectance is unaffected, path 2 `camera+sun` is degraded.
+
+If required tags are missing on a representative sample, **stop** and figure out why before processing further.
+
+For deeper one-off inspection of a single capture:
 
 ```bash
-exiftool -G -a -s \
-  -XMP-MicaSense:All -XMP-Camera:All \
-  -RadiometricCalibration -BlackLevel -ISOSpeed -ExposureTime \
-  -GPSLongitude -GPSLatitude -GPSAltitude \
-  data/MicaSense/flight_<YYYY_MM_DD>/0000SET/000/IMG_0000_1.tif
+exiftool -G -a -s data/MicaSense/.../IMG_0000_1.tif | less
 ```
-
-**Pass criteria:**
-- `RadiometricCalibration` present (3 floats).
-- Vignette polynomial coefficients present (6 floats + cx, cy).
-- GPS lat/lon/alt present.
-- DLS2 irradiance present (or note it's missing — affects path decision).
-
-If any are missing on a representative sample, **stop** and figure out why before processing further.
 
 ## 3 · Decide path 1 vs path 2
 
