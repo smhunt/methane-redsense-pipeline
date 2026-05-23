@@ -1,6 +1,6 @@
 [project]
 name = "methane-redsense-pipeline"
-version = "0.2.0"
+version = "0.2.1"
 description = "MicaSense RedEdge-MX → Python radiometric calibration → WebODM pipeline for landfill methane vegetation-stress mapping (W12A site)."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -14,19 +14,23 @@ keywords = ["micasense", "rededge", "webodm", "multispectral", "methane", "ndvi"
 #   - exiftool (for pyexiftool)        brew install exiftool
 #   - libzbar (for pyzbar)             brew install zbar
 #
-# MicaSense radiometric model: we follow the model from
-#   https://github.com/micasense/imageprocessing
-# in our own code (see CLAUDE.md). The reference repo is *not* a
-# runtime dependency — only the underlying libraries it relies on
-# are listed below.
+# MicaSense radiometric model: installed directly from the official
+# reference repo, pinned to a SHA for reproducibility (it is not
+# published to PyPI). Bump the SHA deliberately, not casually.
+#   Upstream: https://github.com/micasense/imageprocessing
 dependencies = [
     # Imagery I/O
     "numpy>=1.26",
     "rasterio>=1.3",
-    # Image processing for the calibration reimplementation
-    "opencv-python-headless>=4.9",
+    # MicaSense radiometric calibration (pinned to master @ 2026-05-22).
+    # Pulls in opencv-python, matplotlib, pysolar transitively.
+    # NOTE: install requires GIT_LFS_SKIP_SMUDGE=1 — the repo has orphaned
+    # LFS pointers for tutorial sample data the Python module doesn't need.
+    "micasense @ git+https://github.com/micasense/imageprocessing.git@3a903861b2f38c1717a5b6d918a2d9196db507ae",
+    # Supporting image processing
+    # (opencv-python comes transitively from micasense, don't list separately)
     "scikit-image>=0.22",
-    "pyzbar>=0.1.9",
+    "pyzbar>=0.1.9",  # also needs DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib at import time on macOS arm64
     # EXIF preservation through the pipeline
     "pyexiftool>=0.5",
     # WebODM API client

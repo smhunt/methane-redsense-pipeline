@@ -37,17 +37,33 @@ docs/              Architecture and operator runbook
 ## Quick start
 
 ```bash
+# System deps first (not installable via pip)
+brew install gdal exiftool zbar git-lfs
+
 # Env setup
-uv venv && source .venv/bin/activate
+uv venv --python 3.11 && source .venv/bin/activate
+
+# The micasense reference repo has orphaned git-lfs pointers for tutorial
+# sample data; the Python module doesn't need them. Skip LFS smudge:
+export GIT_LFS_SKIP_SMUDGE=1
+
 uv pip install -r requirements.txt        # runtime only
 uv pip install -e ".[dev]"                # + pytest / ruff for development
+
+# pyzbar on Apple Silicon can't find libzbar via ctypes.util.find_library.
+# Export this in your shell (and any direnv/.envrc) so Python sees it at import time:
+export DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_FALLBACK_LIBRARY_PATH
 
 # Tests / lint
 pytest
 ruff check . && ruff format --check .
 ```
 
-System dependencies (not installable via pip): `gdal`, `exiftool`, `zbar` — `brew install gdal exiftool zbar` on macOS.
+After changing dependencies in `pyproject.toml`, regenerate the lock:
+
+```bash
+GIT_LFS_SKIP_SMUDGE=1 uv pip compile --python-version 3.11 pyproject.toml -o requirements.txt
+```
 
 See [CLAUDE.md → Quick commands](CLAUDE.md#quick-commands) for the full pipeline invocations.
 

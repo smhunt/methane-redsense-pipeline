@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format roughly follows [Keep a Changelog](https://keepachangelog.com/) with semantic versioning.
 
+## [0.2.1] - 2026-05-22
+
+### Added
+- `micasense` runtime dep, installed from the official reference repo and pinned to master @ `3a90386` (the repo is not on PyPI). Pulls in `opencv-python`, `matplotlib`, `pysolar` transitively.
+- README and CLAUDE.md document the two env quirks that surfaced when actually building the env: `GIT_LFS_SKIP_SMUDGE=1` for install (orphaned LFS pointers in upstream micasense) and `DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib` at runtime (pyzbar can't find libzbar via ctypes on macOS arm64).
+- `requirements.txt` regenerated against `--python-version 3.11` so the pins match the stated minimum (previous compile against system 3.12 picked `rasterio==1.5.0` which requires 3.12+).
+
+### Changed
+- Dropped explicit `opencv-python-headless` from runtime deps. `micasense` already pulls in `opencv-python`; both installed `cv2`, the second-loaded won — wasted disk for no gain. If we ever drop micasense, re-add headless.
+- README "Quick start" rewritten as a working step-by-step sequence (system deps → venv → env vars → install → test).
+
+### Verified
+- `uv pip install -r requirements.txt` + `uv pip install -e ".[dev]"` succeeds on Python 3.11.14 / macOS arm64.
+- All runtime imports (numpy, rasterio, cv2, skimage, pyzbar, exiftool, pyodm, yaml, micasense.{image,capture,panel,dls}) load cleanly with the documented env vars.
+- `ruff check .` and `ruff format --check .` pass on the current tree.
+- `pytest` runs (0 tests collected — expected; no test files yet).
+
 ## [0.2.0] - 2026-05-22
 
 ### Added

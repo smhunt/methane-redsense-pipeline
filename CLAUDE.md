@@ -8,11 +8,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository status
 
-**Status (2026-05-22):** scaffolding. `src/` package layout exists (empty `__init__.py` per subpackage) — no modules implemented yet. `pyproject.toml` declares deps and tool config (ruff, pytest); `requirements.txt` is pinned via `uv pip compile`. No tests written yet.
+**Status (2026-05-22):** scaffolding. `src/` package layout exists (empty `__init__.py` per subpackage) — no modules implemented yet. `pyproject.toml` declares deps and tool config (ruff, pytest); `requirements.txt` is pinned via `uv pip compile` against Python 3.11. `micasense/imageprocessing` is pinned to a master SHA and installed via git. No tests written yet.
 
-Update `requirements.txt` after any dep change in `pyproject.toml`:
+### Env quirks (see README "Quick start" for the full sequence)
+
+- **`GIT_LFS_SKIP_SMUDGE=1`** required during `uv pip compile` / `install` — the upstream micasense repo has orphaned LFS pointers we don't need.
+- **`DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib`** required at Python runtime on macOS arm64 — `pyzbar` uses `ctypes.util.find_library` which doesn't search Homebrew paths.
+
+### Regenerating the lock
+
 ```bash
-uv pip compile pyproject.toml -o requirements.txt
+GIT_LFS_SKIP_SMUDGE=1 uv pip compile --python-version 3.11 pyproject.toml -o requirements.txt
 ```
 
 -----
