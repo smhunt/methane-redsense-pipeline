@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Format roughly follows [Keep a Changelog](https://keepachangelog.com/) with semantic versioning.
 
+## [0.4.1] - 2026-05-25
+
+### Changed
+- Documented the real WebODM endpoint: `http://localhost:8000` (Docker container `webapp` from `webodm/webodm_webapp`; NodeODM worker `node-odx-1` runs alongside). Verified reachable (redirects to `/login/`).
+- `CLAUDE.md` → WebODM workflow, `docs/README.md` → tech stack, `docs/PIPELINE.md` §5 all updated to point at the real endpoint instead of TBD.
+- `~/.claude/PORTS.md` (global, not in repo) registers WebODM at port 8000 under Reserved Docker Services + adds a `methane-redsense-pipeline` project section.
+
+### Pending
+- The `src/odm/submit` helper (next module) will read `WEBODM_URL` from env, defaulting to the registered endpoint.
+- No Traefik proxy for WebODM yet; `https://webodm.dev.ecoworks.ca` would be a separate traefik route if we want HTTPS via the usual convention.
+
 ## [0.4.0] - 2026-05-25
 
 ### Added

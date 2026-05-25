@@ -67,7 +67,7 @@ Deeper reference for the W12A methane mapping pipeline. For operating instructio
 | Imagery I/O | `rasterio`, GDAL | GeoTIFF read/write, band stacking | TBD (not yet pinned) |
 | MicaSense calibration | [`micasense/imageprocessing`](https://github.com/micasense/imageprocessing) | Reference radiometric model | Authoritative |
 | EXIF | `pyexiftool` + system `exiftool` | Read XMP/EXIF, preserve through pipeline | TBD |
-| Photogrammetry | WebODM (Docker) | Orthomosaic generation per band | Endpoint TBD |
+| Photogrammetry | WebODM (Docker) | Orthomosaic generation per band | `http://localhost:8000` (container `webapp`) |
 | Analysis | `numpy`, `rasterio`, possibly `xarray` | Indices, zonal stats | TBD |
 | Tests / lint | `pytest`, `ruff` (format + check) | — | Configured in CLAUDE.md, not yet wired |
 

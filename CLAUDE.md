@@ -84,7 +84,7 @@ Mirror the relevant subfolders into `data/` locally before processing. Do not co
 
 ## WebODM workflow — settings that matter
 
-**WebODM endpoint:** TBD — not yet stood up for this project. When set up, register the port in `~/.claude/PORTS.md` and update this section with the URL (e.g. `https://dev.ecoworks.ca:<port>`). The `src/odm/submit` helper should read the endpoint from env (`WEBODM_URL`) rather than hardcoding it.
+**WebODM endpoint:** `http://localhost:8000` (Docker, container `webapp` from `webodm/webodm_webapp`; NodeODM worker `node-odx-1` runs alongside). Registered in `~/.claude/PORTS.md` under Reserved Docker Services. The `src/odm/submit` helper reads `WEBODM_URL` from env, defaulting to `http://localhost:8000`. No Traefik / HTTPS proxy yet — if we ever want `https://webodm.dev.ecoworks.ca`, that's an additional traefik route (out of scope for the pipeline itself).
 
 When feeding **pre-calibrated reflectance TIFs** (path 1) to WebODM, use:
 

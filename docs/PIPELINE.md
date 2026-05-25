@@ -111,7 +111,7 @@ The presets bake in the settings from [../CLAUDE.md → WebODM workflow](../CLAU
 - `texturing-skip-global-seam-leveling: true` ← critical for reflectance integrity
 - `radiometric-calibration: none` (path 1) or `camera+sun` (path 2)
 
-**WebODM endpoint:** not yet stood up for this project — see [../CLAUDE.md → WebODM workflow](../CLAUDE.md#webodm-workflow--settings-that-matter) for the env-var contract once it's running.
+**WebODM endpoint:** `http://localhost:8000` (Docker; container `webapp`, image `webodm/webodm_webapp`, NodeODM worker `node-odx-1` runs alongside). The `src/odm/submit` helper reads `WEBODM_URL` from env, defaulting to this. Browse runs at <http://localhost:8000>.
 
 While processing, expect: hours for a typical W12A flight on local hardware, depending on GSD and image count.
 
