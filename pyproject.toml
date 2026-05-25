@@ -1,6 +1,6 @@
 [project]
 name = "methane-redsense-pipeline"
-version = "0.3.0"
+version = "0.4.0"
 description = "MicaSense RedEdge-MX → Python radiometric calibration → WebODM pipeline for landfill methane vegetation-stress mapping (W12A site)."
 readme = "README.md"
 requires-python = ">=3.11"

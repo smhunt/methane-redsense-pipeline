@@ -72,19 +72,27 @@ When in doubt: **path 1**. The Python step costs minutes, miscalibration costs h
 ## 4 · Calibrate (path 1 only)
 
 ```bash
-python -m src.calibration.run \
+DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib python -m src.calibration.run \
   --input data/MicaSense/flight_<YYYY_MM_DD>/ \
   --panel data/calibration/panel_<PANEL_SERIAL>.csv \
   --output outputs/calibrated/flight_<YYYY_MM_DD>/
 ```
 
-**Pass criteria:**
-- Output is per-band float32 TIF, values in 0.0–1.0.
-- Spot-check 3–5 images in QGIS or `rio info` — reflectance histogram should not be clipped at 0 or 1.
-- EXIF preserved: `exiftool outputs/calibrated/.../IMG_0000_1.tif | grep GPS` returns coordinates.
+Add `--use-dls` to use per-capture DLS2 irradiance instead of panel-derived. The audit step verifies DLS data is present; `--use-dls` hard-fails if any capture is missing it.
 
-**If panel detection failed on all panel captures:**
-- The output is radiance, not reflectance. Tag the output directory accordingly (e.g. `flight_<date>_RADIANCE_ONLY/`) and *do not* feed it to downstream index code expecting reflectance.
+Panel captures must live in `<input>/panel/`. The module averages per-band irradiance across all panel captures whose panel-detection succeeds on all 5 bands. The summary prints the panel-derived irradiance, and (with `--use-dls`) the DLS mean alongside, flagging any band where the two disagree by >10%.
+
+**Pass criteria (printed by the summary):**
+- `Captures processed:` matches the working-capture count from §2's audit (give or take any partial / corrupt captures, which are skipped + listed).
+- Reflectance stats: per-band `mean`/`p95`/`max` printed; the summary flags `max > 1.2` as `calibration suspect`.
+- Spot-check 3–5 captures in QGIS — reflectance histogram should sit in 0.0–1.0 (small negatives near shadow are normal; runaway positives are not).
+- EXIF preserved: `exiftool outputs/calibrated/.../IMG_0000_1.tif | grep -E "GPS|BandName|RadiometricCalibration"` returns values.
+- GeoTIFF intact: `gdalinfo outputs/calibrated/.../IMG_0000_1.tif` reports `Float32`, single band.
+
+**If panel detection fails on all panel captures:**
+The module writes to a **sibling `<output>_RADIANCE_ONLY/` directory** (not your requested `--output`) and exits with code `3`. Output is **radiance**, not reflectance — do NOT feed to WebODM with `--radiometric-calibration none`. Investigate the panel captures (shadow on QR, exposure, altitude) and re-run.
+
+**Exit codes:** `0` clean · `1` partial (some captures failed but the rest wrote OK) · `2` bad args / missing panel CSV / no captures found · `3` radiance-only fallback.
 
 ## 5 · Submit to WebODM
 

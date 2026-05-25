@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format roughly follows [Keep a Changelog](https://keepachangelog.com/) with semantic versioning.
 
+## [0.4.0] - 2026-05-25
+
+### Added
+- `src/calibration/calibrate.py` — MicaSense radiometric calibration pipeline. Parses panel certificate CSV (with percent-vs-fraction validation), discovers panel + working captures (panel under `<flight>/panel/`, working elsewhere), derives per-band irradiance from panel captures (averaged across all panels that detect on all 5 bands), and calibrates each working capture to per-band float32 reflectance GeoTIFFs with EXIF preserved from raw.
+- `src/calibration/run.py` — thin CLI: `python -m src.calibration.run --input <flight_dir> --panel <panel.csv> --output <out_dir> [--use-dls]`. Exit codes: `0` clean / `1` partial / `2` bad args / `3` radiance-only fallback.
+- `src/calibration/test_calibrate.py` — 31 tests covering pure logic (CSV parse + validation, capture grouping incl. SET counter collisions, panel/working discovery, float32 TIF roundtrip incl. no-clip behavior, band stats with NaN handling + warning threshold, CLI error paths).
+
+### Behavior worth knowing
+- **Output mirrors input subdir layout** (`<output>/0000SET/000/IMG_0001_1.tif`) — chosen over flat naming to avoid MicaSense's per-SET capture-counter collisions.
+- **Radiance-only fallback:** if panel detection fails on all panel captures, output is redirected to a sibling `<output>_RADIANCE_ONLY/` directory and the run exits `3`. Prevents accidentally feeding uncalibrated radiance to WebODM.
+- **EXIF copy uses explicit allowlist** (`-EXIF:All -XMP:All -MakerNotes:All`) — a bare `-TagsFromFile -overwrite_original` would clobber the GeoTIFF tags rasterio just wrote. Each output is re-opened post-write to confirm rasterio's structure survived.
+- **Memory model:** ~25MB resident per `Capture`; explicit `del capture; gc.collect()` per iteration so 1000+ capture flights don't balloon RSS.
+- **`--use-dls` hard-fails** if DLS data missing on any capture (operator explicitly opted in; silent fallback to panel would erode the contract).
+- **Panel-vs-DLS disagreement >10% warned in summary** (CLAUDE.md gotcha).
+- **No clipping** of reflectance values — values >1.2 stay visible in the float32 output and are flagged in the per-band stats so calibration errors don't go silent.
+
+### Changed
+- `docs/PIPELINE.md` §4 rewritten to match the real CLI: documents `--use-dls`, the radiance-only fallback dir, exit codes, and the pass criteria the summary actually prints.
+
 ## [0.3.0] - 2026-05-22
 
 ### Added
