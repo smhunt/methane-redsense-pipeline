@@ -1,0 +1,10 @@
+# Local, filled-in config (the example is committed; the real one is not —
+# it carries machine-specific paths and is paired with secrets in env).
+config/sonami.yaml
+
+# Shared-data symlink for the worktree workflow (see README).
+_shared_data
+
+# Local data/outputs if created inside this folder (also covered by repo root).
+data/
+outputs/

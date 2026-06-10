@@ -1,0 +1,70 @@
+[project]
+name = "sonami-correlation"
+version = "0.1.0"
+description = "Correlate TDLAS point methane measurements against Pix4D orthomosaic imagery over the W12A landfill (SONAMI). Distinct from the MicaSense→WebODM pipeline in the parent repo."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Sean Hunt", email = "sean@ecoworks.ca" }]
+keywords = ["tdlas", "pix4d", "methane", "postgis", "correlation", "morans-i", "landfill"]
+
+# Runtime dependencies.
+#
+# System deps not installable via pip — install separately:
+#   - GDAL (for rasterio / geopandas)   brew install gdal
+#   - PostGIS (for psycopg2 target)     brew install postgresql postgis
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "scipy>=1.11",            # Pearson/Spearman + spatial stats
+    "geopandas>=0.14",        # vector I/O, CRS handling
+    "shapely>=2.0",
+    "rasterio>=1.3",          # Pix4D GeoTIFF sampling / grid I/O
+    "pyproj>=3.6",            # CRS validation / reprojection
+    # PostGIS target. geopandas.to_postgis writes via SQLAlchemy + GeoAlchemy2;
+    # psycopg2 is the underlying DB-API driver (per the project plan).
+    "psycopg2-binary>=2.9",
+    "SQLAlchemy>=2.0",
+    "GeoAlchemy2>=0.14",
+    "folium>=0.15",           # interactive map overlay
+    "matplotlib>=3.8",        # statistical plots
+    "pyyaml>=6.0",            # config
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=4.1",
+    "ruff>=0.4",
+]
+# Kriging is optional — IDW is the built-in default for the gridded surface.
+kriging = ["pykrige>=1.7"]
+
+[project.scripts]
+sonami = "sonami.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sonami*"]
+
+# ── Ruff (mirrors the parent repo's config) ──────────────────────────
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "C4"]
+
+[tool.ruff.lint.per-file-ignores]
+"test_*.py" = ["B011"]
+"correlation.py" = ["E741"]   # `I` is the canonical symbol for Moran's I
+
+# ── Pytest ───────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["sonami"]
+python_files = ["test_*.py"]
+addopts = ["--strict-markers", "--strict-config", "-ra"]
