@@ -1,0 +1,316 @@
+<title>SONAMI Phase 4 — Wireframes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    color-scheme: light dark;
+    --paper: #eef0f1;
+    --stage: #f6f7f8;
+    --panel: #ffffff;
+    --ink: #1c2426;
+    --line: #9aa4a9;
+    --line-soft: #c4cccf;
+    --label: #6a747a;
+    --hatch: rgba(120,132,138,.14);
+    --hatch-line: rgba(120,132,138,.42);
+    --accent: #1f7a75;
+    --accent-soft: rgba(31,122,117,.12);
+    --chrome: #e2e6e8;
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --shadow: 0 1px 2px rgba(28,36,38,.06), 0 12px 34px rgba(28,36,38,.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0c1214; --stage: #10171a; --panel: #16211f; --ink: #dbe4e2;
+      --line: #566468; --line-soft: #33423f; --label: #7f8c8f;
+      --hatch: rgba(140,152,158,.10); --hatch-line: rgba(140,152,158,.30);
+      --accent: #3bb6ad; --accent-soft: rgba(59,182,173,.16); --chrome: #1b2528;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 14px 40px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --paper:#eef0f1; --stage:#f6f7f8; --panel:#fff; --ink:#1c2426; --line:#9aa4a9;
+    --line-soft:#c4cccf; --label:#6a747a; --hatch:rgba(120,132,138,.14); --hatch-line:rgba(120,132,138,.42);
+    --accent:#1f7a75; --accent-soft:rgba(31,122,117,.12); --chrome:#e2e6e8;
+    --shadow:0 1px 2px rgba(28,36,38,.06),0 12px 34px rgba(28,36,38,.08);
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper:#0c1214; --stage:#10171a; --panel:#16211f; --ink:#dbe4e2; --line:#566468;
+    --line-soft:#33423f; --label:#7f8c8f; --hatch:rgba(140,152,158,.10); --hatch-line:rgba(140,152,158,.30);
+    --accent:#3bb6ad; --accent-soft:rgba(59,182,173,.16); --chrome:#1b2528;
+    --shadow:0 1px 2px rgba(0,0,0,.35),0 14px 40px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 40px 24px 72px; }
+
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  h1 { font-size: clamp(1.5rem, 1.05rem + 2vw, 2.05rem); margin: 8px 0 0; font-weight: 680; letter-spacing: -0.01em; text-wrap: balance; }
+  .lede { color: var(--label); max-width: 66ch; margin: 10px 0 0; }
+  .lede code { font-family: var(--mono); font-size: .88em; color: var(--ink); }
+
+  /* stage label rows */
+  .stage-head { display: flex; align-items: baseline; gap: 12px; margin: 40px 0 14px; }
+  .stage-head h2 { font-size: 1rem; margin: 0; font-weight: 640; }
+  .stage-head .dims { font-family: var(--mono); font-size: 11.5px; color: var(--label); letter-spacing: .04em; }
+  .stage-head .rule { flex: 1; height: 1px; background: var(--line-soft); align-self: center; }
+
+  /* ---- browser chrome frame ---- */
+  .frame { background: var(--panel); border: 1px solid var(--line-soft); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+  .frame.mobile { max-width: 380px; }
+  .chrome { display: flex; align-items: center; gap: 7px; padding: 10px 14px; background: var(--chrome); border-bottom: 1px solid var(--line-soft); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid var(--line); }
+  .addr { flex: 1; margin-left: 8px; height: 20px; border-radius: 5px; border: 1px dashed var(--line); background: transparent;
+          font-family: var(--mono); font-size: 11px; color: var(--label); display: flex; align-items: center; padding: 0 10px; }
+  .stage { padding: 22px; background: var(--stage); }
+  .frame.mobile .stage { padding: 14px; }
+
+  /* wireframe primitives */
+  .wf { border: 1.5px solid var(--line); border-radius: 8px; background: var(--panel); position: relative; }
+  .wf.dash { border-style: dashed; }
+  .box-label { position: absolute; top: 8px; left: 10px; font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
+               text-transform: uppercase; color: var(--label); }
+  .ph { /* image/canvas placeholder with diagonal cross */
+    background:
+      linear-gradient(to top right, transparent calc(50% - 0.8px), var(--hatch-line) 50%, transparent calc(50% + 0.8px)),
+      linear-gradient(to top left,  transparent calc(50% - 0.8px), var(--hatch-line) 50%, transparent calc(50% + 0.8px)),
+      var(--hatch);
+    border: 1.5px solid var(--line); border-radius: 8px;
+  }
+  .hatch {
+    background: repeating-linear-gradient(45deg, var(--hatch) 0 7px, transparent 7px 14px);
+    border: 1.5px dashed var(--line); border-radius: 8px;
+  }
+  /* text-line stand-ins */
+  .lines { display: flex; flex-direction: column; gap: 8px; }
+  .ln { height: 9px; border-radius: 3px; background: var(--line-soft); }
+  .ln.title { height: 15px; background: var(--line); border-radius: 4px; }
+  .ln.w40 { width: 40%; } .ln.w55 { width: 55%; } .ln.w70 { width: 70%; }
+  .ln.w85 { width: 85%; } .ln.w100 { width: 100%; } .ln.w25 { width: 25%; }
+  .pill-wf { display: inline-block; height: 20px; width: 120px; border-radius: 999px; border: 1.5px solid var(--line); }
+  .chip { display: inline-block; height: 16px; width: 74px; border-radius: 5px; border: 1.5px dashed var(--line); }
+
+  /* numbered annotation marker */
+  .mk { position: absolute; z-index: 2; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff;
+        font-family: var(--mono); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+  @media (prefers-color-scheme: dark) { .mk { color: #06110f; } }
+  :root[data-theme="dark"] .mk { color: #06110f; }
+  :root[data-theme="light"] .mk { color: #fff; }
+
+  /* the report skeleton inside the frame */
+  .report { display: flex; flex-direction: column; gap: 16px; }
+  .banner-wf { border: 1.5px solid var(--accent); border-left: 5px solid var(--accent); border-radius: 8px; background: var(--accent-soft);
+               padding: 14px 16px 14px 18px; position: relative; display: grid; grid-template-columns: auto 1fr; gap: 12px; }
+  .banner-wf .tagbox { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .1em; color: var(--accent); white-space: nowrap; }
+  .two-col { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; }
+  .mobile .two-col { grid-template-columns: 1fr; }
+  .pad { padding: 16px; }
+  .map-ph { aspect-ratio: 16 / 10; }
+  .card-block { display: flex; flex-direction: column; gap: 12px; height: 100%; }
+  .stat-big { height: 40px; width: 60%; border-radius: 6px; background: var(--line); }
+  .table-wf { padding: 16px; }
+  .trow { display: grid; grid-template-columns: 1.4fr repeat(5, 1fr); gap: 12px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--line-soft); }
+  .trow:last-child { border-bottom: none; }
+  .trow.head .cell { height: 8px; background: var(--line); opacity: .7; }
+  .cell { height: 9px; border-radius: 3px; background: var(--line-soft); }
+  .cell.short { width: 60%; }
+  .scatter-row { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; align-items: center; }
+  .mobile .scatter-row { grid-template-columns: 1fr; }
+  .scatter-ph { aspect-ratio: 4 / 3; }
+
+  /* annotation key */
+  .key { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px 22px; }
+  .key .row { display: grid; grid-template-columns: 26px 1fr; gap: 12px; align-items: start; }
+  .key .num { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff; font-family: var(--mono);
+              font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+  :root[data-theme="dark"] .key .num { color:#06110f; } :root[data-theme="light"] .key .num { color:#fff; }
+  @media (prefers-color-scheme: dark) { .key .num { color:#06110f; } }
+  .key .t { font-family: var(--mono); font-size: 13px; font-weight: 600; }
+  .key .d { color: var(--label); font-size: 13px; margin-top: 2px; }
+  .key .d code { font-family: var(--mono); font-size: .86em; color: var(--ink); }
+
+  .flow { display: grid; grid-template-columns: 1fr 380px; gap: 28px; align-items: start; }
+  @media (max-width: 900px) { .flow { grid-template-columns: 1fr; } }
+
+  .note { margin-top: 8px; font-family: var(--mono); font-size: 11.5px; color: var(--label); letter-spacing: .02em; }
+  footer { margin-top: 44px; border-top: 1px solid var(--line-soft); padding-top: 18px; color: var(--label); font-size: 13px; }
+  footer code { font-family: var(--mono); color: var(--ink); font-size: .9em; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SONAMI · Phase 4 — Layout wireframes</div>
+    <h1>Report structure, before the pixels</h1>
+    <p class="lede">Low-fidelity blueprint of the <code>sonami.cli visualize</code> output page — the same
+      regions as the rendered preview, stripped to boxes and placeholders so the <em>layout logic</em> is
+      reviewable on its own. Hatched boxes are canvas/image regions; grey bars stand in for text and data.
+      Numbered markers map to the annotation key below.</p>
+  </header>
+
+  <div class="flow">
+    <!-- DESKTOP WIREFRAME -->
+    <div>
+      <div class="stage-head">
+        <h2>Desktop</h2>
+        <span class="dims">≥ 760px · single column, 1080px max</span>
+        <span class="rule"></span>
+      </div>
+      <div class="frame">
+        <div class="chrome">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="addr">sonami-correlation/docs/preview.html</span>
+        </div>
+        <div class="stage">
+          <div class="report">
+
+            <!-- masthead -->
+            <div class="wf pad" style="position:relative">
+              <span class="mk" style="top:-11px; left:-11px">1</span>
+              <div class="lines">
+                <div class="ln w25" style="background:var(--accent); height:8px"></div>
+                <div class="ln title w70"></div>
+                <div class="ln w100"></div>
+                <div class="ln w85"></div>
+              </div>
+            </div>
+
+            <!-- synthetic banner -->
+            <div class="banner-wf">
+              <span class="mk" style="top:-11px; left:-11px">2</span>
+              <div class="tagbox">◆ SYNTHETIC</div>
+              <div class="lines">
+                <div class="ln w100"></div>
+                <div class="ln w85"></div>
+                <div class="ln w55"></div>
+              </div>
+            </div>
+
+            <!-- map + moran row -->
+            <div class="two-col">
+              <div class="wf" style="position:relative; padding:14px">
+                <span class="mk" style="top:-11px; left:-11px">3</span>
+                <span class="box-label">correlation map</span>
+                <div class="ph map-ph" style="margin-top:22px"></div>
+                <div style="display:flex; gap:8px; margin-top:12px; align-items:center">
+                  <span class="chip"></span><span class="chip" style="width:110px"></span>
+                  <span style="flex:1"></span><span class="chip" style="width:120px"></span>
+                </div>
+              </div>
+              <div class="wf" style="position:relative; padding:16px">
+                <span class="mk" style="top:-11px; left:-11px">4</span>
+                <span class="box-label">moran's I</span>
+                <div class="card-block" style="margin-top:24px">
+                  <div class="stat-big"></div>
+                  <span class="pill-wf"></span>
+                  <div class="lines" style="margin-top:6px">
+                    <div class="ln w100"></div><div class="ln w100"></div>
+                    <div class="ln w85"></div><div class="ln w70"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- band table -->
+            <div class="wf table-wf" style="position:relative">
+              <span class="mk" style="top:-11px; left:-11px">5</span>
+              <span class="box-label">per-band correlation</span>
+              <div style="margin-top:22px">
+                <div class="trow head">
+                  <div class="cell short"></div><div class="cell"></div><div class="cell"></div>
+                  <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                </div>
+                <div class="trow"><div class="cell short"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+                <div class="trow"><div class="cell short"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+                <div class="trow"><div class="cell short"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+                <div class="trow"><div class="cell short"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+              </div>
+            </div>
+
+            <!-- scatter -->
+            <div class="wf pad" style="position:relative">
+              <span class="mk" style="top:-11px; left:-11px">6</span>
+              <span class="box-label">best-band scatter</span>
+              <div class="scatter-row" style="margin-top:22px">
+                <div class="ph scatter-ph"></div>
+                <div class="lines">
+                  <div class="ln w85"></div><div class="ln w70"></div><div class="ln w85"></div>
+                  <div class="ln w55"></div><div class="ln w40"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- footer -->
+            <div class="wf dash pad" style="position:relative">
+              <span class="mk" style="top:-11px; left:-11px">7</span>
+              <div class="hatch" style="height:38px; border:none; background:repeating-linear-gradient(45deg,var(--hatch) 0 7px,transparent 7px 14px)"></div>
+              <div class="lines" style="margin-top:10px"><div class="ln w100"></div><div class="ln w70"></div></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <p class="note">Grid: 1.6fr / 1fr for the map+Moran row and 1.3fr / 1fr for the scatter row; everything else full-bleed.</p>
+    </div>
+
+    <!-- MOBILE WIREFRAME -->
+    <div>
+      <div class="stage-head">
+        <h2>Mobile</h2>
+        <span class="dims">&lt; 760px · columns collapse</span>
+        <span class="rule"></span>
+      </div>
+      <div class="frame mobile">
+        <div class="chrome">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="addr">preview.html</span>
+        </div>
+        <div class="stage">
+          <div class="report">
+            <div class="wf pad"><div class="lines"><div class="ln w40" style="background:var(--accent);height:7px"></div><div class="ln title w85"></div><div class="ln w100"></div></div></div>
+            <div class="banner-wf" style="grid-template-columns:1fr; gap:8px">
+              <div class="tagbox">◆ SYNTHETIC</div>
+              <div class="lines"><div class="ln w100"></div><div class="ln w85"></div><div class="ln w70"></div></div>
+            </div>
+            <div class="wf" style="padding:12px"><span class="box-label">map</span><div class="ph map-ph" style="margin-top:20px"></div></div>
+            <div class="wf" style="padding:14px"><span class="box-label">moran's I</span><div class="card-block" style="margin-top:20px"><div class="stat-big"></div><span class="pill-wf"></span><div class="lines"><div class="ln w100"></div><div class="ln w70"></div></div></div></div>
+            <div class="wf table-wf">
+              <span class="box-label">bands</span>
+              <div style="margin-top:20px; overflow:hidden">
+                <div class="trow head" style="grid-template-columns:1.4fr repeat(3,1fr)"><div class="cell short"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+                <div class="trow" style="grid-template-columns:1.4fr repeat(3,1fr)"><div class="cell short"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+                <div class="trow" style="grid-template-columns:1.4fr repeat(3,1fr)"><div class="cell short"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+              </div>
+              <p class="note" style="margin-top:8px">↔ table scrolls horizontally</p>
+            </div>
+            <div class="wf pad"><span class="box-label">scatter</span><div class="ph scatter-ph" style="margin-top:20px"></div><div class="lines" style="margin-top:10px"><div class="ln w85"></div><div class="ln w55"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <p class="note">Both 2-column rows stack; the band table keeps its own <code>overflow-x</code> so the page body never scrolls sideways.</p>
+    </div>
+  </div>
+
+  <!-- ANNOTATION KEY -->
+  <div class="stage-head">
+    <h2>Annotation key</h2>
+    <span class="dims">marker → component → source</span>
+    <span class="rule"></span>
+  </div>
+  <div class="key">
+    <div class="row"><span class="num">1</span><div><div class="t">Masthead</div><div class="d">Eyebrow, H1, one-line description. Names the phase and the site.</div></div></div>
+    <div class="row"><span class="num">2</span><div><div class="t">Synthetic banner</div><div class="d">Amber-in-real, pinned above every chart. Non-negotiable — states all values are fabricated demo data.</div></div></div>
+    <div class="row"><span class="num">3</span><div><div class="t">Correlation map</div><div class="d">IDW methane raster + flight-line points + agreement ring, with ramp legend. → <code>visualize.correlation_map</code></div></div></div>
+    <div class="row"><span class="num">4</span><div><div class="t">Moran's I card</div><div class="d">Big observed I, clustered/dispersed pill, expected/p/weights/n list. → <code>correlation.morans_i</code></div></div></div>
+    <div class="row"><span class="num">5</span><div><div class="t">Per-band table</div><div class="d">Pearson r, Spearman ρ, R², p, n per band; best row flagged. → <code>correlation.correlate_bands</code></div></div></div>
+    <div class="row"><span class="num">6</span><div><div class="t">Best-band scatter</div><div class="d">Methane vs top band + OLS fit, with r/R² stat list. → <code>visualize.scatter_plot</code></div></div></div>
+    <div class="row"><span class="num">7</span><div><div class="t">Footer</div><div class="d">Real run command (<code>python -m sonami.cli run</code>) + synthetic reminder.</div></div></div>
+  </div>
+
+  <footer>
+    Wireframe · monochrome blueprint of <code>sonami-correlation/docs/preview.html</code>. Structure only — no live data, no final colour.
+  </footer>
+</div>
