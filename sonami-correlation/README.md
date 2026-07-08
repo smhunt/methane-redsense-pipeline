@@ -117,6 +117,25 @@ python -m sonami.cli run-all    --config config/sonami.yaml
 | 3 Correlate | `correlation.py`  | Pearson & Spearman (point-to-pixel) with R²/p; Moran's I spatial autocorrelation; per-band correlation table. |
 | 4 Visualize | `visualize.py`    | Folium map (TDLAS points + ortho composite), highlight high-correlation zones, export GeoJSON, statistical plots. |
 
+## Layout previews
+
+Two self-contained HTML docs under [`docs/`](docs/) show the shape of the Phase 4
+report before any real data exists. Open them in a browser.
+
+- [`docs/preview.html`](docs/preview.html) — the rendered Phase 4 report
+  (correlation map, Moran's I, per-band table, best-band scatter).
+  **All numbers are synthetic**, computed in-browser from one seeded methane
+  field so the views stay mutually consistent — they demonstrate the layout and
+  the statistics produced, not any W12A result.
+- [`docs/wireframes.html`](docs/wireframes.html) — a low-fidelity monochrome
+  blueprint of the same page (desktop + mobile), with a numbered key mapping each
+  region back to its module (`correlate_bands`, `morans_i`, `correlation_map`,
+  `scatter_plot`).
+
+A real run replaces the preview with an interactive folium `correlation_map.html`
+plus `correlation_points.geojson` and `scatter_<band>.png`, populated with
+measured values.
+
 ## Caveats / assumptions to record
 
 - **CRS for distance math**: IDW and Moran's I need a *projected* CRS (metres).

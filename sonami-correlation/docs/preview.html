@@ -216,7 +216,7 @@
     <span class="eyebrow">SONAMI · Phase 4 — Visualize &amp; Export</span>
     <h1>TDLAS × Pix4D methane correlation report</h1>
     <p class="sub">
-      What <code>python -m sonami.cli visualize</code> renders after Phases 1–3: the interpolated
+      What <code>python -m sonami.cli visualize</code> (Phase 4) renders after Phases 1–3: the interpolated
       methane surface with high-agreement zones, global spatial autocorrelation, per-band
       point-to-pixel correlation, and the best-band scatter — for the W12A landfill survey.
     </p>
@@ -323,8 +323,8 @@
 
   <footer>
     <div>Reproduce the real report (once <code>config/sonami.yaml</code> is filled in):</div>
-    <div class="run"><span class="c">python</span> -m sonami.cli run      <span style="color:var(--muted)"># phases 1–4 end to end</span>
-<span class="c">python</span> -m sonami.cli visualize <span style="color:var(--muted)"># just re-render map + scatter + GeoJSON</span></div>
+    <div class="run"><span class="c">python</span> -m sonami.cli run-all    --config config/sonami.yaml  <span style="color:var(--muted)"># phases 1–4 end to end</span>
+<span class="c">python</span> -m sonami.cli visualize --config config/sonami.yaml  <span style="color:var(--muted)"># just re-render map + scatter + GeoJSON</span></div>
     <p class="re"><strong>Reminder:</strong> this page is a synthetic mock-up for layout review only. The live
       run writes an interactive <code>correlation_map.html</code> over the real orthomosaic, a
       <code>correlation_points.geojson</code> for stakeholders, and <code>scatter_&lt;band&gt;.png</code> —
