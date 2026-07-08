@@ -1,0 +1,76 @@
+# SONAMI Methane Correlation — example configuration.
+#
+# Copy this file to `sonami.yaml` and fill in every `null` / TODO before a run.
+# No dataset-specific values are provided here on purpose — paths, CRS, GSD, and
+# sample counts must come from your actual TDLAS + Pix4D outputs. Any value left
+# as `null` will raise a clear error the moment a phase needs it.
+
+project:
+  name: sonami-w12a-correlation
+  # CRS that ALL layers are reprojected to for analysis. Use a PROJECTED CRS
+  # (metres) so IDW and Moran's I distances are meaningful — WGS84 degrees will
+  # distort distance math. Pick the site's UTM zone.
+  # TODO: e.g. "EPSG:32617" (UTM 17N). Confirm the W12A zone.
+  analysis_crs: null
+
+data:
+  # Shared data root, relative to this config's directory. Defaults to the
+  # repo's gitignored `data/` so imagery is NOT duplicated. See README.
+  root: "../data"
+
+  tdlas:
+    # Path RELATIVE to `data.root`.
+    csv: null                 # TODO: e.g. "SONAMI/tdlas/w12a_2026xxxx.csv"
+    # CRS the lat/lon are recorded in (usually WGS84). Reprojected to analysis_crs.
+    crs: null                 # TODO: e.g. "EPSG:4326"
+    sample_count: null        # TODO: expected row count, for a sanity check
+    # Map your CSV's actual column names -> the canonical names used in code.
+    columns:
+      timestamp: timestamp
+      lat: lat
+      lon: lon
+      methane_ppm: methane_ppm
+      altitude: altitude
+
+  pix4d:
+    # Path RELATIVE to `data.root`.
+    orthomosaic: null         # TODO: e.g. "SONAMI/pix4d/w12a_ortho.tif"
+    # Band names in raster order (1-indexed in the file). RGB or multispectral.
+    bands: null               # TODO: e.g. ["red", "green", "blue"]
+    gsd_cm: null              # TODO: ground sample distance, cm/px
+    processing_date: null     # TODO: e.g. "2026-05-30"
+
+postgis:
+  # Connection. Host/port/db/user may live here; the PASSWORD must come from the
+  # env var named below (never commit secrets).
+  host: localhost
+  port: 5432
+  dbname: sonami
+  user: sonami
+  password_env: SONAMI_PG_PASSWORD
+  # Table the TDLAS points are loaded into (geometry-indexed).
+  tdlas_table: tdlas_points
+
+spatial_match:
+  interpolation: idw          # idw | kriging  (kriging needs the [kriging] extra)
+  idw_power: 2
+  # Grid resolution (metres) for the gridded TDLAS surface. Match the Pix4D GSD
+  # (gsd_cm / 100) unless you have reason to coarsen.
+  grid_res_m: null            # TODO
+  # How to read raster values at point locations: nearest | bilinear.
+  sample_strategy: nearest
+
+correlation:
+  methods: [pearson, spearman]
+  moran:
+    weights: knn              # knn | distance_band
+    k: 8                      # neighbours, when weights = knn
+    distance_band_m: null     # band radius (m), when weights = distance_band
+    permutations: 999         # for the permutation p-value
+  # Skip a band if fewer than this many valid point/pixel pairs.
+  min_valid_pairs: 30
+
+output:
+  dir: "outputs/sonami"       # relative to repo root; gitignored
+  geojson: correlation_points.geojson
+  heatmap_html: correlation_map.html

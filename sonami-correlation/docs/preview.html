@@ -1,0 +1,650 @@
+<title>SONAMI Phase 4 — Output Preview (synthetic)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    color-scheme: light dark;
+    --paper: #f6f8f7;
+    --panel: #ffffff;
+    --ink: #12201f;
+    --muted: #5b6b69;
+    --hair: #d9e2e0;
+    --hair-strong: #c3d0cd;
+    --teal: #0e8b84;
+    --teal-bright: #14a89f;
+    --amber-fg: #8a5a09;
+    --amber-bd: #e6c15a;
+    --amber-bg: #fdf3d3;
+    --grid: rgba(18, 32, 31, 0.08);
+    --shadow: 0 1px 2px rgba(18,32,31,.05), 0 8px 24px rgba(18,32,31,.05);
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0c1413;
+      --panel: #121d1c;
+      --ink: #e7efed;
+      --muted: #90a29f;
+      --hair: #223230;
+      --hair-strong: #2c3f3d;
+      --teal: #2bb7ae;
+      --teal-bright: #3fd0c6;
+      --amber-fg: #e9c766;
+      --amber-bd: #6b5a24;
+      --amber-bg: #2a2413;
+      --grid: rgba(231, 239, 237, 0.09);
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --paper: #f6f8f7; --panel: #ffffff; --ink: #12201f; --muted: #5b6b69;
+    --hair: #d9e2e0; --hair-strong: #c3d0cd; --teal: #0e8b84; --teal-bright: #14a89f;
+    --amber-fg: #8a5a09; --amber-bd: #e6c15a; --amber-bg: #fdf3d3;
+    --grid: rgba(18,32,31,.08); --shadow: 0 1px 2px rgba(18,32,31,.05), 0 8px 24px rgba(18,32,31,.05);
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #0c1413; --panel: #121d1c; --ink: #e7efed; --muted: #90a29f;
+    --hair: #223230; --hair-strong: #2c3f3d; --teal: #2bb7ae; --teal-bright: #3fd0c6;
+    --amber-fg: #e9c766; --amber-bd: #6b5a24; --amber-bg: #2a2413;
+    --grid: rgba(231,239,237,.09); --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 64px; }
+
+  /* ---- header ---- */
+  header.masthead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    font-weight: 600;
+  }
+  h1 {
+    font-size: clamp(1.5rem, 1rem + 2.2vw, 2.15rem);
+    line-height: 1.12;
+    margin: 6px 0 0;
+    font-weight: 680;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    flex: 1 1 100%;
+  }
+  .sub { color: var(--muted); margin: 8px 0 0; max-width: 62ch; flex: 1 1 100%; }
+  .sub code { font-family: var(--mono); font-size: .88em; color: var(--ink); }
+
+  /* ---- synthetic banner ---- */
+  .synthetic {
+    margin: 22px 0 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 14px;
+    align-items: start;
+    padding: 16px 18px;
+    background: var(--amber-bg);
+    border: 1px solid var(--amber-bd);
+    border-left: 4px solid var(--amber-bd);
+    border-radius: 10px;
+  }
+  .synthetic .mark {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: .12em;
+    color: var(--amber-fg);
+    padding-top: 1px;
+    white-space: nowrap;
+  }
+  .synthetic p { margin: 0; color: var(--amber-fg); font-size: 14px; }
+  .synthetic p + p { margin-top: 6px; }
+  .synthetic strong { font-weight: 700; }
+
+  /* ---- section scaffolding ---- */
+  section { margin-top: 34px; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .sec-head h2 {
+    font-size: 1.02rem; margin: 0; font-weight: 640; letter-spacing: -0.005em;
+  }
+  .sec-head .tag {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--hair);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  /* ---- map + moran row ---- */
+  .row { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; align-items: stretch; }
+  @media (max-width: 760px) { .row { grid-template-columns: 1fr; } }
+
+  .map-card { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .canvas-frame { position: relative; width: 100%; }
+  canvas { width: 100%; height: auto; display: block; border-radius: 8px; }
+  .legend { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+  .ramp { height: 10px; width: 150px; border-radius: 3px; background: linear-gradient(90deg,#ffffb2,#fed976,#feb24c,#fd8d3c,#f03b20,#bd0026); border: 1px solid var(--hair-strong); }
+  .legend .swatch { width: 11px; height: 11px; border-radius: 50%; display: inline-block; vertical-align: -1px; }
+  .ring-key { width: 13px; height: 13px; border-radius: 50%; border: 1.5px dashed var(--teal); display: inline-block; vertical-align: -2px; }
+
+  /* moran card */
+  .moran { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+  .moran .big {
+    font-family: var(--mono); font-variant-numeric: tabular-nums;
+    font-size: clamp(2.4rem, 1.5rem + 3vw, 3.1rem); line-height: 1; font-weight: 600; letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .moran .big small { font-size: .34em; color: var(--muted); font-weight: 500; letter-spacing: .04em; margin-left: 6px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .04em;
+    padding: 4px 9px; border-radius: 999px;
+    background: color-mix(in srgb, var(--teal) 15%, transparent);
+    color: var(--teal); border: 1px solid color-mix(in srgb, var(--teal) 35%, transparent);
+  }
+  .moran dl { margin: 2px 0 0; display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; }
+  .moran dt { color: var(--muted); font-size: 13px; }
+  .moran dd { margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 13px; text-align: right; }
+  .moran .foot { font-size: 12px; color: var(--muted); border-top: 1px solid var(--hair); padding-top: 12px; }
+
+  /* ---- table ---- */
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 620px; }
+  thead th {
+    text-align: right; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600; padding: 12px 14px; border-bottom: 1px solid var(--hair-strong);
+    white-space: nowrap;
+  }
+  thead th:first-child, tbody td:first-child { text-align: left; }
+  tbody td {
+    padding: 11px 14px; border-bottom: 1px solid var(--hair);
+    font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 13.5px; text-align: right; white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody td.band { font-weight: 600; letter-spacing: .01em; }
+  tbody tr.best { background: color-mix(in srgb, var(--teal) 9%, transparent); }
+  .best-flag {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--teal); border: 1px solid color-mix(in srgb, var(--teal) 40%, transparent);
+    border-radius: 4px; padding: 1px 5px; margin-left: 8px;
+  }
+  .rbar { display: inline-block; height: 7px; border-radius: 2px; vertical-align: middle; margin-left: 8px; }
+  .neg { color: #b0611a; } .pos { color: var(--teal); }
+  @media (prefers-color-scheme: dark) { .neg { color: #e0913f; } }
+  :root[data-theme="dark"] .neg { color: #e0913f; }
+  :root[data-theme="light"] .neg { color: #b0611a; }
+
+  /* ---- scatter ---- */
+  .scatter-card { padding: 16px; }
+  .scatter-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; align-items: center; }
+  @media (max-width: 760px) { .scatter-grid { grid-template-columns: 1fr; } }
+  .stat-list { display: flex; flex-direction: column; gap: 10px; }
+  .stat-list .item { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--hair); padding-bottom: 8px; gap: 12px; }
+  .stat-list .item:last-child { border-bottom: none; }
+  .stat-list .k { color: var(--muted); font-size: 13px; }
+  .stat-list .v { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 15px; font-weight: 600; }
+  .stat-list .expl { font-size: 12.5px; color: var(--muted); margin: 4px 0 0; line-height: 1.45; }
+
+  /* ---- footer ---- */
+  footer { margin-top: 40px; border-top: 1px solid var(--hair); padding-top: 20px; color: var(--muted); font-size: 13px; }
+  footer .run {
+    font-family: var(--mono); font-size: 12.5px; color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 5%, transparent);
+    border: 1px solid var(--hair); border-radius: 8px; padding: 12px 14px; margin: 10px 0 0;
+    overflow-x: auto; white-space: pre;
+  }
+  footer .run .c { color: var(--teal); }
+  footer .re { margin-top: 14px; max-width: 74ch; }
+  a { color: var(--teal); }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <span class="eyebrow">SONAMI · Phase 4 — Visualize &amp; Export</span>
+    <h1>TDLAS × Pix4D methane correlation report</h1>
+    <p class="sub">
+      What <code>python -m sonami.cli visualize</code> renders after Phases 1–3: the interpolated
+      methane surface with high-agreement zones, global spatial autocorrelation, per-band
+      point-to-pixel correlation, and the best-band scatter — for the W12A landfill survey.
+    </p>
+  </header>
+
+  <div class="synthetic" role="note" aria-label="Synthetic data notice">
+    <span class="mark">◆ SYNTHETIC</span>
+    <div>
+      <p><strong>Every number on this page is fabricated demo data, not a real W12A result.</strong>
+        It exists only to show the <em>layout and the kinds of statistics</em> the pipeline produces.
+        The map, Moran's I, the band table and the scatter are all computed in your browser from one
+        seeded synthetic methane field, so they are internally consistent with each other — but they
+        describe nothing about the actual site.</p>
+      <p>In particular, the "NDRE tracks methane strongest" story below is an <strong>invented
+        construct</strong>, not evidence about landfill vegetation stress. Real figures appear only
+        after <code>config/sonami.yaml</code> is filled with the actual TDLAS export and Pix4D
+        orthomosaic and the pipeline is run on that data.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="row">
+      <div class="panel map-card">
+        <div class="sec-head">
+          <h2>Correlation map</h2>
+          <span class="tag">folium · EPSG:4326</span>
+        </div>
+        <div class="canvas-frame">
+          <canvas id="map" width="1120" height="760" aria-label="Synthetic methane correlation map"></canvas>
+        </div>
+        <div class="legend">
+          <span>CH₄ (ppm·m)</span>
+          <span class="ramp" role="img" aria-label="low to high methane color ramp"></span>
+          <span>low → high</span>
+          <span style="flex:1"></span>
+          <span><span class="ring-key"></span> high-agreement zone</span>
+        </div>
+      </div>
+
+      <div class="panel moran">
+        <div class="sec-head" style="margin:0">
+          <h2>Moran's I</h2>
+          <span class="tag">methane · global</span>
+        </div>
+        <div class="big" id="moranI">0.00<small>observed</small></div>
+        <span class="pill" id="moranPill">clustered · p &lt; 0.001</span>
+        <dl>
+          <dt>Expected I</dt><dd id="moranE">−0.006</dd>
+          <dt>Pseudo p-value</dt><dd id="moranP">0.001</dd>
+          <dt>Weights</dt><dd>KNN, k=8</dd>
+          <dt>Permutations</dt><dd>999</dd>
+          <dt>n (points)</dt><dd id="moranN">180</dd>
+        </dl>
+        <p class="foot">Positive I well above the expected value means high methane readings sit
+          near other high readings — spatial clustering, not noise. Matches
+          <code>correlation.morans_i</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <div class="sec-head" style="padding:16px 16px 0">
+        <h2>Per-band correlation</h2>
+        <span class="tag">point-to-pixel · pairwise-complete</span>
+      </div>
+      <div class="table-scroll">
+        <table id="bandTable">
+          <thead>
+            <tr>
+              <th>Band / index</th>
+              <th>Pearson r</th>
+              <th>Spearman ρ</th>
+              <th>R²</th>
+              <th>p-value</th>
+              <th>n</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="panel scatter-card">
+      <div class="sec-head">
+        <h2>Best-band scatter</h2>
+        <span class="tag" id="scatterTag">methane vs —</span>
+      </div>
+      <div class="scatter-grid">
+        <div class="canvas-frame">
+          <canvas id="scatter" width="880" height="660" aria-label="Synthetic scatter of methane versus best band"></canvas>
+        </div>
+        <div>
+          <div class="stat-list" id="scatterStats"></div>
+          <p class="expl">The crimson line is the ordinary-least-squares fit
+            (<code>np.polyfit</code>, degree 1) drawn by <code>visualize.scatter_plot</code>.
+            A tight band around the line is what a strong <span class="v" style="font-size:inherit">|r|</span> looks like.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>Reproduce the real report (once <code>config/sonami.yaml</code> is filled in):</div>
+    <div class="run"><span class="c">python</span> -m sonami.cli run      <span style="color:var(--muted)"># phases 1–4 end to end</span>
+<span class="c">python</span> -m sonami.cli visualize <span style="color:var(--muted)"># just re-render map + scatter + GeoJSON</span></div>
+    <p class="re"><strong>Reminder:</strong> this page is a synthetic mock-up for layout review only. The live
+      run writes an interactive <code>correlation_map.html</code> over the real orthomosaic, a
+      <code>correlation_points.geojson</code> for stakeholders, and <code>scatter_&lt;band&gt;.png</code> —
+      populated with measured values, which may look nothing like the demo above.</p>
+  </footer>
+</div>
+
+<script>
+(() => {
+  // ---- seeded PRNG (deterministic page) ----
+  const mulberry32 = (a) => () => {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const rand = mulberry32(20260706);
+  // Box–Muller normal
+  const randn = () => {
+    let u = 0, v = 0;
+    while (u === 0) u = rand();
+    while (v === 0) v = rand();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  };
+
+  // ---- synthetic survey: serpentine flight over a bbox ----
+  const N = 180;
+  const W = 1.0, H = 1.0;           // normalized site box
+  const lines = 10;
+  const xs = [], ys = [];
+  for (let i = 0; i < N; i++) {
+    const line = Math.floor(i / (N / lines));
+    const alongN = (i % (N / lines)) / (N / lines - 1);
+    const along = line % 2 === 0 ? alongN : 1 - alongN;
+    const y = (line + 0.5) / lines * H + (rand() - 0.5) * 0.01;
+    const x = 0.04 + along * (W - 0.08) + (rand() - 0.5) * 0.012;
+    xs.push(x); ys.push(y);
+  }
+
+  // methane field: two Gaussian "seeps" + baseline + noise -> spatial clustering
+  const seeps = [
+    { x: 0.34, y: 0.40, a: 46, s: 0.16 },
+    { x: 0.72, y: 0.66, a: 30, s: 0.12 },
+  ];
+  const methane = xs.map((x, i) => {
+    let m = 8; // baseline ppm·m
+    for (const s of seeps) {
+      const d2 = (x - s.x) ** 2 + (ys[i] - s.y) ** 2;
+      m += s.a * Math.exp(-d2 / (2 * s.s * s.s));
+    }
+    return m + randn() * 2.4;
+  });
+
+  // ---- stats helpers ----
+  const mean = (a) => a.reduce((s, v) => s + v, 0) / a.length;
+  const std = (a, mu = mean(a)) => Math.sqrt(a.reduce((s, v) => s + (v - mu) ** 2, 0) / a.length);
+  const zscore = (a) => { const mu = mean(a), sd = std(a, mu) || 1; return a.map((v) => (v - mu) / sd); };
+  const pearson = (a, b) => {
+    const ma = mean(a), mb = mean(b);
+    let num = 0, da = 0, db = 0;
+    for (let i = 0; i < a.length; i++) { const u = a[i] - ma, v = b[i] - mb; num += u * v; da += u * u; db += v * v; }
+    return num / Math.sqrt(da * db);
+  };
+  const rankOf = (a) => {
+    const idx = a.map((v, i) => [v, i]).sort((p, q) => p[0] - q[0]);
+    const r = new Array(a.length);
+    for (let k = 0; k < idx.length;) {
+      let j = k;
+      while (j + 1 < idx.length && idx[j + 1][0] === idx[k][0]) j++;
+      const avg = (k + j) / 2 + 1;
+      for (let t = k; t <= j; t++) r[idx[t][1]] = avg;
+      k = j + 1;
+    }
+    return r;
+  };
+  const spearman = (a, b) => pearson(rankOf(a), rankOf(b));
+  // normal CDF via erf approximation
+  const erf = (x) => {
+    const s = x < 0 ? -1 : 1; x = Math.abs(x);
+    const t = 1 / (1 + 0.3275911 * x);
+    const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+    return s * y;
+  };
+  const phi = (z) => 0.5 * (1 + erf(z / Math.SQRT2));
+  const pFromR = (r, n) => {
+    const t = Math.abs(r) * Math.sqrt((n - 2) / Math.max(1e-12, 1 - r * r));
+    const p = 2 * (1 - phi(t)); // large-df normal approx
+    return p;
+  };
+  const fmtP = (p) => p < 1e-10 ? "< 1e-10" : p < 1e-4 ? p.toExponential(1) : p.toFixed(4);
+
+  // ---- bands: target correlations against methane (SYNTHETIC) ----
+  const zm = zscore(methane);
+  const bandSpec = [
+    { band: "ndre",     r: -0.82, lo: 0.18, hi: 0.55 },
+    { band: "ndvi",     r: -0.67, lo: 0.30, hi: 0.80 },
+    { band: "red_edge", r:  0.54, lo: 0.08, hi: 0.22 },
+    { band: "nir",      r: -0.33, lo: 0.20, hi: 0.42 },
+    { band: "red",      r:  0.21, lo: 0.05, hi: 0.16 },
+    { band: "green",    r:  0.04, lo: 0.06, hi: 0.14 },
+  ];
+  const bands = bandSpec.map((b) => {
+    const noise = zscore(Array.from({ length: N }, () => randn()));
+    const raw = zm.map((z, i) => b.r * z + Math.sqrt(Math.max(0, 1 - b.r * b.r)) * noise[i]);
+    // rescale to a plausible index range for display (correlation is scale-invariant)
+    const rz = zscore(raw);
+    const vals = rz.map((z) => b.lo + (z * 0.2 + 0.5) * (b.hi - b.lo));
+    const pr = pearson(methane, vals);
+    const sr = spearman(methane, vals);
+    return { band: b.band, values: vals, pearson_r: pr, spearman_r: sr, r_squared: pr * pr, p: pFromR(pr, N), n: N };
+  }).sort((a, b) => Math.abs(b.pearson_r) - Math.abs(a.pearson_r));
+  const best = bands[0];
+
+  // ---- Moran's I (KNN k=8, 999 perms) ----
+  const morans = (() => {
+    const k = 8;
+    const nbr = [];
+    for (let i = 0; i < N; i++) {
+      const d = [];
+      for (let j = 0; j < N; j++) if (j !== i) d.push([(xs[i] - xs[j]) ** 2 + (ys[i] - ys[j]) ** 2, j]);
+      d.sort((p, q) => p[0] - q[0]);
+      nbr.push(d.slice(0, k).map((e) => e[1]));
+    }
+    const I = (vals) => {
+      const mu = mean(vals);
+      const z = vals.map((v) => v - mu);
+      let num = 0, s0 = 0;
+      for (let i = 0; i < N; i++) for (const j of nbr[i]) { num += (z[i] * z[j]) / k; s0 += 1 / k; }
+      const den = z.reduce((s, v) => s + v * v, 0);
+      return (N / s0) * (num / den);
+    };
+    const obs = I(methane);
+    const perms = 999;
+    let extreme = 0;
+    const expected = -1 / (N - 1);
+    for (let p = 0; p < perms; p++) {
+      const sh = methane.slice();
+      for (let i = sh.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [sh[i], sh[j]] = [sh[j], sh[i]]; }
+      if (Math.abs(I(sh) - expected) >= Math.abs(obs - expected)) extreme++;
+    }
+    return { I: obs, expected, p: (extreme + 1) / (perms + 1), n: N };
+  })();
+
+  // ---- render Moran card ----
+  const setText = (id, t) => (document.getElementById(id).textContent = t);
+  document.getElementById("moranI").innerHTML = morans.I.toFixed(2) + '<small>observed</small>';
+  setText("moranE", morans.expected.toFixed(3));
+  setText("moranP", fmtP(morans.p).replace("< ", "< "));
+  setText("moranN", String(morans.n));
+  document.getElementById("moranPill").textContent =
+    (morans.I > 0.05 ? "clustered" : morans.I < -0.05 ? "dispersed" : "random") +
+    " · p " + (morans.p <= 0.001 ? "≤ 0.001" : "= " + morans.p.toFixed(3));
+
+  // ---- render band table ----
+  const tbody = document.querySelector("#bandTable tbody");
+  const maxAbs = Math.max(...bands.map((b) => Math.abs(b.pearson_r)));
+  bands.forEach((b) => {
+    const tr = document.createElement("tr");
+    if (b === best) tr.className = "best";
+    const sign = b.pearson_r < 0 ? "neg" : "pos";
+    const barW = Math.max(2, Math.round((Math.abs(b.pearson_r) / maxAbs) * 46));
+    const barColor = b.pearson_r < 0 ? "var(--neg,#b0611a)" : "var(--teal)";
+    tr.innerHTML =
+      `<td class="band">${b.band}${b === best ? '<span class="best-flag">best</span>' : ""}</td>` +
+      `<td class="${sign}">${b.pearson_r >= 0 ? "+" : "−"}${Math.abs(b.pearson_r).toFixed(3)}` +
+        `<span class="rbar" style="width:${barW}px;background:${b.pearson_r < 0 ? "#c0741f" : "var(--teal)"}"></span></td>` +
+      `<td class="${b.spearman_r < 0 ? "neg" : "pos"}">${b.spearman_r >= 0 ? "+" : "−"}${Math.abs(b.spearman_r).toFixed(3)}</td>` +
+      `<td>${b.r_squared.toFixed(3)}</td>` +
+      `<td>${fmtP(b.p)}</td>` +
+      `<td>${b.n}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // ---- render scatter stats ----
+  document.getElementById("scatterTag").textContent = "methane vs " + best.band;
+  const stats = [
+    ["Pearson r", (best.pearson_r >= 0 ? "+" : "−") + Math.abs(best.pearson_r).toFixed(3)],
+    ["R²", best.r_squared.toFixed(3)],
+    ["Spearman ρ", (best.spearman_r >= 0 ? "+" : "−") + Math.abs(best.spearman_r).toFixed(3)],
+    ["p-value", fmtP(best.p)],
+    ["n pairs", String(best.n)],
+  ];
+  const sl = document.getElementById("scatterStats");
+  stats.forEach(([k, v]) => {
+    const d = document.createElement("div");
+    d.className = "item";
+    d.innerHTML = `<span class="k">${k}</span><span class="v">${v}</span>`;
+    sl.appendChild(d);
+  });
+
+  // ---- canvas helpers ----
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  // YlOrRd-ish ramp
+  const RAMP = [[255,255,178],[254,217,118],[254,178,76],[253,141,60],[240,59,32],[189,0,38]];
+  const rampColor = (t) => {
+    t = Math.max(0, Math.min(1, t));
+    const seg = t * (RAMP.length - 1);
+    const i = Math.min(RAMP.length - 2, Math.floor(seg));
+    const f = seg - i;
+    const c = RAMP[i].map((v, k) => Math.round(v + (RAMP[i + 1][k] - v) * f));
+    return `rgb(${c[0]},${c[1]},${c[2]})`;
+  };
+
+  function setupCanvas(cv) {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const rect = cv.getBoundingClientRect();
+    cv.width = Math.round(rect.width * dpr);
+    cv.height = Math.round(rect.width * (cv.dataset.ar || 0.68) * dpr);
+    const ctx = cv.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w: rect.width, h: rect.width * (cv.dataset.ar || 0.68) };
+  }
+
+  const mMin = Math.min(...methane), mMax = Math.max(...methane);
+
+  function drawMap() {
+    const cv = document.getElementById("map"); cv.dataset.ar = 0.66;
+    const { ctx, w, h } = setupCanvas(cv);
+    const pad = 10;
+    const X = (x) => pad + x * (w - 2 * pad);
+    const Y = (y) => pad + (1 - y) * (h - 2 * pad);
+
+    // IDW raster background
+    const gcols = 90, grows = Math.round(gcols * (h / w));
+    const cellW = (w - 2 * pad) / gcols, cellH = (h - 2 * pad) / grows;
+    for (let gy = 0; gy < grows; gy++) {
+      for (let gx = 0; gx < gcols; gx++) {
+        const px = (gx + 0.5) / gcols, py = 1 - (gy + 0.5) / grows;
+        let num = 0, den = 0, exact = -1;
+        for (let i = 0; i < N; i++) {
+          const d2 = (px - xs[i]) ** 2 + (py - ys[i]) ** 2;
+          if (d2 < 1e-9) { exact = i; break; }
+          const wgt = 1 / (d2 * d2); num += wgt * methane[i]; den += wgt;
+        }
+        const val = exact >= 0 ? methane[exact] : num / den;
+        ctx.fillStyle = rampColor((val - mMin) / (mMax - mMin));
+        ctx.fillRect(pad + gx * cellW, pad + gy * cellH, cellW + 1, cellH + 1);
+      }
+    }
+    // subtle frame
+    ctx.strokeStyle = css("--hair-strong"); ctx.lineWidth = 1;
+    ctx.strokeRect(pad, pad, w - 2 * pad, h - 2 * pad);
+
+    // high-agreement zone: centroid of top-quartile local agreement
+    const zb = zscore(best.values);
+    const agree = zm.map((z, i) => z * zb[i]);
+    const order = agree.map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]);
+    const top = order.slice(0, Math.round(N * 0.18)).map((e) => e[1]);
+    const cx = mean(top.map((i) => xs[i])), cy = mean(top.map((i) => ys[i]));
+    const rr = 1.15 * Math.sqrt(mean(top.map((i) => (xs[i] - cx) ** 2 + (ys[i] - cy) ** 2)));
+    ctx.save();
+    ctx.setLineDash([7, 6]); ctx.lineWidth = 2; ctx.strokeStyle = css("--teal");
+    ctx.beginPath();
+    ctx.ellipse(X(cx), Y(cy), rr * (w - 2 * pad), rr * (h - 2 * pad), 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = css("--teal"); ctx.font = "600 12px " + css("--mono") ;
+    ctx.fillText("high-agreement zone", X(cx) - 62, Y(cy) - rr * (h - 2 * pad) - 8);
+    ctx.restore();
+
+    // flight-line points
+    for (let i = 0; i < N; i++) {
+      ctx.beginPath();
+      ctx.arc(X(xs[i]), Y(ys[i]), 3.6, 0, Math.PI * 2);
+      ctx.fillStyle = rampColor((methane[i] - mMin) / (mMax - mMin));
+      ctx.fill();
+      ctx.lineWidth = 0.8; ctx.strokeStyle = "rgba(0,0,0,0.35)"; ctx.stroke();
+    }
+  }
+
+  function drawScatter() {
+    const cv = document.getElementById("scatter"); cv.dataset.ar = 0.75;
+    const { ctx, w, h } = setupCanvas(cv);
+    const padL = 46, padB = 34, padT = 14, padR = 14;
+    const bx = best.values, by = methane;
+    const xmin = Math.min(...bx), xmax = Math.max(...bx);
+    const ymin = Math.min(...by), ymax = Math.max(...by);
+    const X = (x) => padL + (x - xmin) / (xmax - xmin) * (w - padL - padR);
+    const Y = (y) => (h - padB) - (y - ymin) / (ymax - ymin) * (h - padB - padT);
+
+    // grid
+    ctx.strokeStyle = css("--grid"); ctx.lineWidth = 1;
+    ctx.font = "10px " + css("--mono"); ctx.fillStyle = css("--muted");
+    for (let g = 0; g <= 4; g++) {
+      const yy = padT + g / 4 * (h - padB - padT);
+      ctx.beginPath(); ctx.moveTo(padL, yy); ctx.lineTo(w - padR, yy); ctx.stroke();
+      const val = ymax - g / 4 * (ymax - ymin);
+      ctx.textAlign = "right"; ctx.fillText(val.toFixed(0), padL - 6, yy + 3);
+    }
+    // axis labels
+    ctx.textAlign = "center"; ctx.fillStyle = css("--muted");
+    ctx.fillText(best.band, (padL + w - padR) / 2, h - 8);
+    ctx.save(); ctx.translate(12, (padT + h - padB) / 2); ctx.rotate(-Math.PI / 2);
+    ctx.fillText("methane_ppm", 0, 0); ctx.restore();
+
+    // points
+    for (let i = 0; i < N; i++) {
+      ctx.beginPath(); ctx.arc(X(bx[i]), Y(by[i]), 3.1, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(14,139,132,0.55)";
+      ctx.fill();
+    }
+    // OLS fit
+    const mbx = mean(bx), mby = mean(by);
+    let num = 0, den = 0;
+    for (let i = 0; i < N; i++) { num += (bx[i] - mbx) * (by[i] - mby); den += (bx[i] - mbx) ** 2; }
+    const slope = num / den, intercept = mby - slope * mbx;
+    ctx.strokeStyle = "#d1345b"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(X(xmin), Y(slope * xmin + intercept)); ctx.lineTo(X(xmax), Y(slope * xmax + intercept)); ctx.stroke();
+
+    // annotation
+    ctx.fillStyle = css("--ink"); ctx.textAlign = "left"; ctx.font = "600 12px " + css("--mono");
+    ctx.fillText(`r = ${best.pearson_r.toFixed(3)}   R² = ${best.r_squared.toFixed(3)}`, padL + 8, padT + 14);
+  }
+
+  function renderAll() { drawMap(); drawScatter(); }
+  renderAll();
+  let raf;
+  window.addEventListener("resize", () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(renderAll); });
+  // redraw on theme toggle (colors are read from CSS vars)
+  new MutationObserver(renderAll).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  if (window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", renderAll);
+})();
+</script>
